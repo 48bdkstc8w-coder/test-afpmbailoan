@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tl-PH">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="AFPMBAI Loan Assistant - AI-Powered Official Information, Loan Guidance, and Downloadable Forms for AFP, PNP, BFP, BJMP, PCG, and BuCor members." />
+  <meta name="theme-color" content="#0d2b52" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AFPMBAI LOAN ASSISTANT</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="header-avatar" aria-hidden="true">🛡️</div>
+        <div>
+          <h1 class="header-title">AFPMBAI LOAN ASSISTANT</h1>
+          <span class="header-status"><span class="status-dot"></span> Official Guide (Online)</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="openFormsBtn" class="btn-icon" title="Forms Library" aria-label="Open Forms Library">
+          📁
+        </button>
+        <button id="newChatBtn" class="btn-icon" title="Bagong Usapan (New Chat)" aria-label="New Chat">
+          🔄
+        </button>
+      </div>
+    </header>
+
+    <!-- Suggestion Carousel / Quick Prompts -->
+    <section class="quick-prompts" aria-label="Frequently Asked Questions">
+      <button class="prompt-chip" data-query="Kamusta!">👋 Kamusta!</button>
+      <button class="prompt-chip" data-query="Ano ang Enhanced Salary Loan?">💰 Salary Loan</button>
+      <button class="prompt-chip" data-query="Ano ang Policy Loan at sino ang pwede?">📜 Policy Loan</button>
+      <button class="prompt-chip" data-query="Paano mag-avail ng MEDAL Loan?">🎓 MEDAL Loan</button>
+      <button class="prompt-chip" data-query="Saan makakakuha ng official application forms?">📑 Mga Forms</button>
+      <button class="prompt-chip" data-query="Paano i-check ang loan balance ko?">🔍 Check Loan Balance</button>
+    </section>
+
+    <!-- Chat Conversation Stream -->
+    <main id="chatStream" class="chat-stream" role="log" aria-live="polite">
+      <!-- Welcome Message loaded by JavaScript -->
+    </main>
+
+    <!-- Loading Indicator -->
+    <div id="typingIndicator" class="typing-indicator hidden" aria-hidden="true">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="typing-label">Nagsusuri sa official records...</span>
+    </div>
+
+    <!-- Bottom Input Dock -->
+    <footer class="chat-dock">
+      <form id="chatForm" class="chat-form" autocomplete="off">
+        <textarea
+          id="userInput"
+          class="chat-input"
+          rows="1"
+          placeholder="Magtanong ukol sa loans, forms, o benepisyo..."
+          aria-label="Your message in Tagalog or English"
+          required
+        ></textarea>
+        <button id="sendBtn" type="submit" class="btn-send" aria-label="Send message">
+          <svg viewBox="0 0 24 24" class="send-icon" aria-hidden="true">
+            <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </button>
+      </form>
+      <div class="dock-disclaimer">
+        Opisyal na batayan: <a href="https://afpmbai.com.ph" target="_blank" rel="noopener">afpmbai.com.ph</a>. Hindi binubuksan ang confidential accounts.
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL 1: Searchable Official Forms Library -->
+  <div id="formsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="formsModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="formsModalTitle" class="modal-title">📑 Official Forms Library</h2>
+        <button id="closeFormsBtn" class="btn-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          I-search ang official downloadable forms mula sa opisyal na website (<a href="https://afpmbai.com.ph/afpmbai-forms/" target="_blank" rel="noopener">afpmbai.com.ph/afpmbai-forms/</a>).
+        </p>
+        <div class="search-box">
+          <input type="search" id="formsSearchInput" placeholder="Mag-search (hal. Salary Loan, Policy, Refund)..." class="form-search-field" />
+        </div>
+        <div class="category-tabs" id="formsCategoryTabs">
+          <button class="cat-pill active" data-cat="all">Lahat</button>
+          <button class="cat-pill" data-cat="loans">Loans</button>
+          <button class="cat-pill" data-cat="insurance">Insurance</button>
+          <button class="cat-pill" data-cat="claims">Claims / Refund</button>
+          <button class="cat-pill" data-cat="membership">Membership</button>
+        </div>
+        <div id="formsListContainer" class="forms-list">
+          <!-- Forms populated by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Human Assistance & Official Inquiry -->
+  <div id="inquiryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="inquiryModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="inquiryModalTitle" class="modal-title">✉️ Opisyal na Human Assistance</h2>
+        <button id="closeInquiryBtn" class="btn-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="inquiry-info-box">
+          Recipient: <strong>escadpeideas@gmail.com</strong><br />
+          <small>Gamitin ito kung kailangan ng manual review o hindi pa kumpirmado sa official website ang iyong katanungan.</small>
+        </div>
+
+        <form id="humanInquiryForm" class="inquiry-form" novalidate>
+          <div class="form-group">
+            <label for="inqName">Pangalan / Rank (Optional):</label>
+            <input type="text" id="inqName" class="form-input" placeholder="Hal. Sgt. Juan Dela Cruz" />
+          </div>
+
+          <div class="form-group">
+            <label for="inqEmail">Email Address <span class="req">*</span>:</label>
+            <input type="email" id="inqEmail" class="form-input" placeholder="pangalan@halimbawa.com" required />
+            <span class="field-error hidden" id="inqEmailError">Maglagay ng wastong email address.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="inqPhone">Contact Number <span class="req">*</span>:</label>
+            <input type="tel" id="inqPhone" class="form-input" placeholder="09171234567" required />
+            <span class="field-error hidden" id="inqPhoneError">Maglagay ng wastong cellphone number (10-12 digits).</span>
+          </div>
+
+          <div class="form-group">
+            <label for="inqQuestion">Katanungan / Inquiry <span class="req">*</span>:</label>
+            <textarea id="inqQuestion" class="form-input" rows="3" placeholder="Ilarawan ang kailangan o itanong..." required></textarea>
+            <span class="field-error hidden" id="inqQuestionError">Huwag iwang blangko ang inquiry.</span>
+          </div>
+
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="inqConsent" required />
+            <label for="inqConsent" class="consent-label">
+              Sumasang-ayon ako sa pagproseso ng aking impormasyon alinsunod sa Data Privacy Act of 2012 (RA 10173) para sa layunin ng inquiry na ito. <span class="req">*</span>
+            </label>
+          </div>
+          <span class="field-error hidden" id="inqConsentError">Kailangang lagyan ng tsek ang consent bago magpatuloy.</span>
+
+          <div id="inquiryStatus" class="inquiry-status-box hidden"></div>
+
+          <div class="modal-footer-actions">
+            <button type="button" id="cancelInquiryBtn" class="btn-secondary">Kanselahin</button>
+            <button type="submit" id="submitInquiryBtn" class="btn-primary">Ihanda ang Mensahe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
